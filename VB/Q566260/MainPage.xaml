@@ -1,0 +1,70 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Q566260"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
+    xmlns:dxp="http://schemas.devexpress.com/winfx/2008/xaml/printing"
+    x:Class="Q566260.MainPage"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="400">
+    <UserControl.Resources>
+        <local:MyConverter x:Key="mc"/>
+        <dx:StringToVisibilityConverter x:Key="StringToVisibitityConverter" />
+        <dxg:PrintGroupPositionToBorderConverter x:Key="PrintGroupPositionToBorderConverter" />
+        <dxg:PrintGroupPositionToBorderConverterInverted  x:Key="PrintGroupRowSeparatorThicknessConverter" />
+        <DataTemplate x:Key="TableViewThemeKey_PrintGroupRowTemplate">
+            <StackPanel Orientation="Horizontal">
+                <dxg:CellFillControl Style="{Binding Path=Content.(dxg:GridPrintingHelper.PrintRowInfo).PrintRowIndentStyle}" />
+                <dxg:FixedTotalSummaryPrintPanel Width="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).CaptionCell.Width}">
+                    <dxg:PrintTextEdit x:Name="PART_EditLeft" Background="{Binding Path=Content.GroupValue.Column, Converter={StaticResource mc}}" EditValue="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).CaptionCell.Text, Mode=OneWay}" Style="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).CaptionCell.PrintGroupRowStyle}" BorderThickness="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).CaptionCell, Converter={StaticResource PrintGroupPositionToBorderConverter}}" IsTopBorderVisible="True" IsBottomRow="True" DetailLevel="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).CaptionCell.DetailLevel}" HorizontalAlignment="Stretch">
+
+                        <dxg:PrintTextEdit.FontFamily>Arial</dxg:PrintTextEdit.FontFamily>
+                        <dxg:PrintTextEdit.UseLayoutRounding>False</dxg:PrintTextEdit.UseLayoutRounding>
+
+                    </dxg:PrintTextEdit>
+                    <dxg:PrintTextEdit x:Name="PART_EditRight" EditValue="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).FirstColumnCell.Text, Mode=OneWay}" Style="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).FirstColumnCell.PrintGroupRowStyle}" IsTopBorderVisible="True" IsBottomRow="True" BorderThickness="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).FirstColumnCell, Converter={StaticResource PrintGroupPositionToBorderConverter}}" DetailLevel="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).FirstColumnCell.DetailLevel}" HorizontalAlignment="Right" Visibility="{Binding EditValue, RelativeSource={RelativeSource Self}, Converter={StaticResource StringToVisibitityConverter}}">
+
+                        <dxg:PrintTextEdit.FontFamily>Arial</dxg:PrintTextEdit.FontFamily>
+                        <dxg:PrintTextEdit.UseLayoutRounding>False</dxg:PrintTextEdit.UseLayoutRounding>
+
+                    </dxg:PrintTextEdit>
+                </dxg:FixedTotalSummaryPrintPanel>
+                <dxg:PrintingGroupItemsControl ItemsSource="{Binding Path=Content.(dxg:GridPrintingHelper.PrintGroupRowInfo).GroupCells}">
+                    <dxg:PrintingGroupItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <dxg:PrintTextEdit Width="{Binding Width}" EditValue="{Binding Text, Mode=OneWay}" Style="{Binding PrintGroupRowStyle}" IsTopBorderVisible="True" IsBottomRow="True" BorderThickness="{Binding Converter={StaticResource PrintGroupPositionToBorderConverterInverted}}" HorizontalContentAlignment="Right" DetailLevel="{Binding DetailLevel}">
+
+                                <dxg:PrintTextEdit.FontFamily>Arial</dxg:PrintTextEdit.FontFamily>
+                                <dxg:PrintTextEdit.UseLayoutRounding>False</dxg:PrintTextEdit.UseLayoutRounding>
+
+                            </dxg:PrintTextEdit>
+                        </DataTemplate>
+                    </dxg:PrintingGroupItemsControl.ItemTemplate>
+                    <dxg:PrintingGroupItemsControl.ItemsPanel>
+                        <ControlTemplate>
+                            <dx:StackVisibleIndexPanel ArrangeAccordingToVisibleIndex="True" Orientation="Horizontal" />
+                        </ControlTemplate>
+                    </dxg:PrintingGroupItemsControl.ItemsPanel>
+                </dxg:PrintingGroupItemsControl>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Button VerticalAlignment="Top" Content="Print" Click="Button_Click"/>
+        <dxg:GridControl AutoGenerateColumns="AddNew" Margin="0,20,0,0" Name="grid">
+            <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="ID"/>
+                <dxg:GridColumn FieldName="Name" GroupIndex="0"/>
+                <dxg:GridColumn FieldName="SomeProperty"  GroupIndex="1"/>
+            </dxg:GridControl.Columns>
+            <dxg:GridControl.View>
+                <dxg:TableView Name="view" ShowTotalSummary="True" PrintGroupRowTemplate="{StaticResource TableViewThemeKey_PrintGroupRowTemplate}"/>
+            </dxg:GridControl.View>
+        </dxg:GridControl>
+
+    </Grid>
+</UserControl>
